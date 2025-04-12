@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot - Telegram Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Cabeçalho do Chat -->
+        <div class="chat-header">
+            <div class="profile">
+                <img src="https://via.placeholder.com/40" alt="Profile" class="profile-pic">
+                <div class="profile-info">
+                    <span class="name">Chatbot</span>
+                    <span class="status" id="status">Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Mensagens -->
+        <div class="chat-box" id="chat-box">
+            <!-- Mensagens serão exibidas aqui -->
+            <div class="message bot">
+                <img src="https://via.placeholder.com/30" alt="Bot" class="profile-pic">
+                <div class="message-content">
+                    <p>Olá! Eu sou o Chatbot. Como posso ajudar você hoje?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador de "Digitando" -->
+        <div class="typing-indicator" id="typing-indicator">
+            <span>Chatbot está digitando...</span>
+        </div>
+
+        <!-- Área de Entrada de Mensagens -->
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Digite uma mensagem..." disabled>
+            <button id="send-btn" disabled>Enviar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+
+
+
+ <style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background-color: #0088cc;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-info .name {
+    font-weight: bold;
+}
+
+.profile-info .status {
+    font-size: 0.8em;
+    color: #e0e0e0;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 10px;
+    max-width: 70%;
+}
+
+.message.bot {
+    align-self: flex-start;
+}
+
+.message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message .profile-pic {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+}
+
+.message-content {
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.message.user .message-content {
+    background-color: #0088cc;
+    color: #fff;
+}
+
+.typing-indicator {
+    padding: 10px;
+    font-size: 0.8em;
+    color: #888;
+    display: none;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    padding: 8px 12px;
+    background-color: #0088cc;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: #0077b3;
+}
+  </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Habilita o input e o botão após o carregamento da página
+    userInput.disabled = false;
+    sendBtn.disabled = false;
+
+    // Função para enviar mensagem
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === '') return;
+
+        appendMessage('user', message);
+        userInput.value = '';
+
+        // Simula o bot digitando
+        typingIndicator.style.display = 'block';
+        setTimeout(() => {
+            typingIndicator.style.display = 'none';
+            appendMessage('bot', 'Você disse: ' + message);
+        }, 2000);
+    }
+
+    function appendMessage(sender, message) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', sender);
+
+        const profilePic = document.createElement('img');
+        profilePic.src = sender === 'user' ? 'https://via.placeholder.com/30' : 'https://via.placeholder.com/30';
+        profilePic.classList.add('profile-pic');
+
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('message-content');
+        messageContent.innerHTML = `<p>${message}</p>`;
+
+        messageElement.appendChild(profilePic);
+        messageElement.appendChild(messageContent);
+        chatBox.appendChild(messageElement);
+
+        // Rola para a última mensagem
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});
+</script>  
+    
+</html>
